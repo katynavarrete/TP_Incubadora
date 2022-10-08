@@ -16,4 +16,5 @@ void esperar();
 void entrada();
 void leer_datos();
 char* get_datos();
+void reiniciar_datos();
 #endif	/* _UTILS_H */

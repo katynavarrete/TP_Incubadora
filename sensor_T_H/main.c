@@ -63,6 +63,7 @@ int main(void)
 		serial_put_char(',');
 		enviar_num(datos[3]);
 		serial_put_String("\r\n");
+		reiniciar_datos();
 		esperar();
 		
 	}

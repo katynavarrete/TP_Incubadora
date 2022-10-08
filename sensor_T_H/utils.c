@@ -1,4 +1,4 @@
-/* se usa el pin 13 de la placa */
+/* se usa el pin 12 de la placa */
 #include <util/delay.h>
 #define BIT5 0x10
 
@@ -91,8 +91,8 @@ void leer_datos()
     			pin_entrada = *(pin_b) & BIT5;
     		}	
     		
-    		/*si tiempo es mayor a 60 es por que es 1 sino es 0*/
-    		if( tiempo > 40){
+    		/*si tiempo es mayor a 40 es por que es 1 sino es 0*/
+    		if( tiempo > 30){
     			datos[idx] |= (1 << cnt);
     		}
     		if( cnt == 0 ){
@@ -127,4 +127,17 @@ char* get_datos(){
 
 	return datos;	
 }
+void reiniciar_datos()
+{
+	unsigned char i; 
+	
+	for(i = 0; i < 5; i++){
+		datos[i] = 0;
+	}
+}		 
+
+
+
+
+
 
