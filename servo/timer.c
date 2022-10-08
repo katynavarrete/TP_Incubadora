@@ -63,13 +63,6 @@ void timer1_init( void )
 	
 }
 
-
-ISR(TIMER1_COMPA_vect)
-{
-	/*timer1-> ocr1ah = 0x00;
-    	timer1-> ocr1al = 0x00;*/
-		
-}
 void apagar(void)
 {
 	timer1-> ocr1ah = 0x00;
