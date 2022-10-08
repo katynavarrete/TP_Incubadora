@@ -1,6 +1,6 @@
 /* se usa el pin 12 de la placa */
 #include <util/delay.h>
-#define BIT5 0x10
+#define BIT4 0x10
 
 /* puertos de E/S */
 volatile unsigned char * port_b = (unsigned char *) 0x25; /* direccion de PORTB: SALIDA */
@@ -15,36 +15,34 @@ void esperar()
 void sensor_init()
 {
 
-	/* configuracion del pin 13 */
-	*(ddr_b) = *(ddr_b) |(BIT5);
+	/* configuracion del pin 12 */
+	*(ddr_b) = *(ddr_b) |(BIT4);
 	
 	/*sensor inactivo */
-	*(port_b) = *(port_b) & (~BIT5);
+	*(port_b) = *(port_b) & (~BIT4);
 
 	
-	
-	//*(pin_b) = BIT5;
 
 }
 
 void senial_alta() 
 {
-	/* configuracion el pin 13 como de salida */
-	*(ddr_b) = *(ddr_b) |(BIT5);
+	/* configuracion el pin 12 como de salida */
+	*(ddr_b) = *(ddr_b) |(BIT4);
 	volatile unsigned char valor_b = *(port_b);
-	valor_b |=  (BIT5);
+	valor_b |=  (BIT4);
 	
 	*(port_b) = valor_b;
 }
 
 void senial_baja() 
 {
-	/* configuracion el pin 13 como de salida */
-	*(ddr_b) = *(ddr_b) |(BIT5);
+	/* configuracion el pin 12 como de salida */
+	*(ddr_b) = *(ddr_b) |(BIT4);
 	
-	/* envia 0 al pin 13 */
+	/* envia 0 al pin 12 */
 	volatile unsigned char valor_b = *(port_b);
-	valor_b &= (~BIT5);
+	valor_b &= (~BIT4);
 	*(port_b) = valor_b;
 	
 	
@@ -52,8 +50,8 @@ void senial_baja()
 unsigned char datos[5] = {0,0,0,0,0};
 void entrada()
 { 
-	/* configuracion el pin 13 como de entrada */
-	*(ddr_b) = *(ddr_b) &(~BIT5);
+	/* configuracion el pin 12 como de entrada */
+	*(ddr_b) = *(ddr_b) &(~BIT4);
 }
 void leer_datos()
 {
@@ -67,15 +65,15 @@ void leer_datos()
     	volatile unsigned char pin_entrada = 1;
     	/* espera hasta que  la señal baje por que puede no haber salido del intervalo de 20-40 microseg*/
     	while(pin_entrada != 0){
-    		pin_entrada = *(pin_b) & BIT5;
+    		pin_entrada = *(pin_b) & BIT4;
     	}	
     	/*espera mientras que la señal suba corresponde a los 80 microseg*/
     	while(pin_entrada == 0)
-    		pin_entrada = *(pin_b) & BIT5;
+    		pin_entrada = *(pin_b) & BIT4;
     		
     	/*espera que la señal baje, corresponde a los siguientes 80 microseg*/		
     	while(pin_entrada != 0)
-   		pin_entrada = *(pin_b) & BIT5;
+   		pin_entrada = *(pin_b) & BIT4;
     			
     	
     	for( i = 0; i < 40; i++)
@@ -83,15 +81,15 @@ void leer_datos()
     		tiempo = 0;
   		/*espero hasta que la señal sea 1*/
   		while(pin_entrada == 0)
-  		 	pin_entrada = *(pin_b) & BIT5;
+  		 	pin_entrada = *(pin_b) & BIT4;
     		/*cuento cuantos microseg pasan hasta que la señal baje*/
     		while(pin_entrada != 0){
     			_delay_us(1);
     			tiempo++;
-    			pin_entrada = *(pin_b) & BIT5;
+    			pin_entrada = *(pin_b) & BIT4;
     		}	
     		
-    		/*si tiempo es mayor a 40 es por que es 1 sino es 0*/
+    		/*si tiempo es mayor a 30 es por que es 1 sino es 0*/
     		if( tiempo > 30){
     			datos[idx] |= (1 << cnt);
     		}
@@ -105,21 +103,7 @@ void leer_datos()
     		
     		
     	}
-    	/**
-	for(i = 0; i < 40 ; i++){
-		
-		valor = *(pin_b) & BIT5;
-		if(valor > 0){
-			datos[idx] |= (1 << cnt);
-		}	
-		if( cnt == 0 ){
-			cnt = 7;
-			idx++;
-		}	
-		else{
-			cnt--;
-		}
-	}*/
+
 	
 		
 }

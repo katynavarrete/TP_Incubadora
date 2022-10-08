@@ -1,7 +1,8 @@
 /**********************************************************************
  *
  * main.c - the main program test file for the serial driver
- *
+ * se usa serial para visualizar los datos detectados por el sensor
+ * en cutecom
  **********************************************************************/
 
 
@@ -40,6 +41,7 @@ int main(void)
 		senial_baja();
 		_delay_ms(18);
 		senial_alta();
+		/* enviar al sensor señal alta (1)  por 30 microseg*/
 		_delay_us(30);
 		entrada();
 		
