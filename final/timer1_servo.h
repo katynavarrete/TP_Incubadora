@@ -3,7 +3,8 @@
 #define _CLOCK_H
 
 void timer1_init( void );
-void prender(void);
+void mover_izq(void);
+void mover_der(void);
 void apagar(void);
 #endif
 

@@ -1,4 +1,3 @@
-/* pin 9*/
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -28,18 +27,26 @@ volatile timer1_t *timer1 = (timer1_t *)(0x80);
 volatile unsigned char *timer1_timsk1 = (unsigned char *)(0x6F);
 
 #define SYSTEM_TICKS 16000000
-#define PRESCALAR 1
+#define PRESCALAR 8
 
-#define TIMER1_CS 0x01  /* prescalar = 8*/
+#define TIMER1_CS 0x02  /* prescalar = 8*/
 #define TIMER1_CTC 0x80 /* OC1A no invertido*/
 
 #define TIMER1_WG0 0x02 /* Fast PWM TOP ICR1*/
 #define TIMER1_WG1 0x18 /* Fast PWM TOP ICR1*/
 
-#define TIMER1_ICR1H 0x7D  
-#define TIMER1_ICR1L 0x00
 
+#define TIMER1_ICR1H 0x9C 
+#define TIMER1_ICR1L 0x40
 
+#define DER_H 0x13
+#define DER_L 0x88
+
+#define MED_H 0x0B
+#define MED_L 0xB8
+
+#define IZQ_H 0x03
+#define IZQ_L 0xE8
 
 void timer1_init( void )
 {
@@ -48,6 +55,8 @@ void timer1_init( void )
 
 	timer1->icr1h = TIMER1_ICR1H; /* define la parte alta de TOP del contador */
 	timer1->icr1l = TIMER1_ICR1L; /* define la parte baja de TOP del contador */
+
+	//(*timer1_timsk1) |= 0x02;  /* 0x01: al producirse overflow se dispara una interrupcion*/ 
 	
 	timer1-> ocr1ah = 0x00;
     	timer1-> ocr1al = 0x00;
@@ -55,19 +64,28 @@ void timer1_init( void )
 }
 
 
-
+ISR(TIMER1_COMPA_vect)
+{
+	/*timer1-> ocr1ah = 0x00;
+    	timer1-> ocr1al = 0x00;*/
+		
+}
 void apagar(void)
 {
 	timer1-> ocr1ah = 0x00;
     	timer1-> ocr1al = 0x00;
 }
-
-void prender(void)
+void mover_izq(void)
 {
-	
-	timer1-> ocr1ah = 0x0C;
-    	timer1-> ocr1al = 0x80;
-	
+	//2000
+	timer1-> ocr1ah = IZQ_H;
+    	timer1-> ocr1al = IZQ_L;
+}
+void mover_der(void)
+{
+	//4000
+	timer1-> ocr1ah = DER_H;
+    	timer1-> ocr1al = DER_L;
 }
 
 	

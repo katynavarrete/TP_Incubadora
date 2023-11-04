@@ -1,5 +1,5 @@
 CC=avr-gcc
-OBJETOS=main.o twi.o lcd_ssd1306.o utils_hum_tem.o timer.o utils_corriente.o  
+OBJETOS=main.o twi.o lcd_ssd1306.o utils_hum_tem.o utils_corriente.o   utils_reley.o timer1_servo.o utils_parlante.o
 APP=final
 CFLAGS=-Os -DF_CPU=16000000UL -mmcu=atmega328p 
 LDFLAGS=-mmcu=atmega328p

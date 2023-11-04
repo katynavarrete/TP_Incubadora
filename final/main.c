@@ -1,6 +1,6 @@
 /*
- 	parlante en pin 9 .
- 	servo en pin 10
+ 	parlante en pin 8 .
+ 	servo en pin 9
  	sensor corriente 11 .
  	sensor humedad y tempertura 12 .
  	reley 13	
@@ -15,15 +15,16 @@
 #include "twi.h"
 #include "font.h"
 #include "utils_corriente.h"
-#include "timer.h"
 #include "utils_hum_tem.h"
+#include "timer1_servo.h"
+#include "utils_parlante.h"
 
 volatile unsigned char *valores;
 #define HUMEDAD_MIN 40
 #define HUMEDAD_MAX 50
 
-#define TEMPERATURA_MIN 37
-#define TEMPERATURA_MAX 38
+#define TEMPERATURA_MIN 25
+#define TEMPERATURA_MAX 30
 
 void enviar_valores(unsigned char num, unsigned char columna , unsigned fila){
 	
@@ -82,9 +83,12 @@ void alarma(unsigned char tipo)
 		break;
 		case 2:
 			lcd_ssd1306_print_text(5,10, "TEMP BAJA");
+			prender_reley();
 		break;
 		case 3:
 			lcd_ssd1306_print_text(5,10, "TEMP ALTA");
+			apagar_reley();
+			
 		break;
 		case 4:
 			lcd_ssd1306_print_text(5,10, "CORTE DE LUZ");
@@ -92,9 +96,9 @@ void alarma(unsigned char tipo)
 	}
 	lcd_ssd1306_render_buffer();
 	
-	prender();
+	prender_speaker();
 	_delay_ms(500);
-	apagar();
+	apagar_speaker();
 	
 	_delay_ms(500);
 }
@@ -109,15 +113,16 @@ void main()
 	/* Inicializa el driver del LCD ssd1306 */
 	lcd_ssd1306_init();
 
+	speaker_init();
 	sensor_init();
-	
-	//serial_init();    
 	timer1_init();
-	
+	reley_init();
+		
 	/* Enable interrupts. */
 	sei();       
 	volatile unsigned char estado;
-		
+	volatile unsigned long i;
+	
 	while (1) {	/* Un programa embebido nunca finaliza */
 	
 		leer_sensor();
@@ -126,27 +131,39 @@ void main()
 			alarma(0);
 		else if(valores[0] > HUMEDAD_MAX)
 			alarma(1);
+		prender_reley();
+		if(valores[2] < TEMPERATURA_MIN){
 		
-		if(valores[2] < TEMPERATURA_MIN)
 			alarma(2);
+			prender_reley();
+		}	
 		else if(valores[2] > TEMPERATURA_MAX)
 			alarma(3);
+		else
+			apagar_reley();
 			
 		/*controla si hay luz*/
 		estado = get_estado();
-		if(estado != 0){
-			prender();
+		if(estado == 0){
+			prender_speaker();
 			alarma(4);
 		}
 		else
-			apagar();
+			apagar_speaker();
 		
 		mostrar_valores();		
 
 		reiniciar_datos();
 		_delay_ms(2000);
 		
+		//moficar
+		mover_der();
+		for(i=0;i < 450000;i++);
+		apagar();
+		for(i=0;i < 450000;i++);
+		mover_izq();
+		for(i=0;i < 450000;i++);
 		
-		
+	//	prender_reley();		
 	}
 }
